@@ -1,0 +1,42 @@
+﻿#include<iostream>
+#include<algorithm>
+#include<stdio.h>
+using namespace std;
+
+int main()
+{
+    int n=0;
+    cin>>n;
+    long long res=0;
+    long long *a[4];
+    for(int i=0;i<4;i++)
+        a[i]=new long long[n];
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<4;j++)
+        {
+            //cin>>a[j][i];
+            scanf("%I64d",&a[j][i]);
+        }
+    }
+    long long *b=new long long [n*n+1];
+    int t=0;
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            b[t++]=a[2][i]+a[3][j];
+        }
+    }
+    sort(b,b+t);
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            long long c=a[0][i]+a[1][j];
+            c=-c;
+            res+=upper_bound(b,b+t,c)-lower_bound(b,b+t,c);
+        }
+    }
+    printf("%I64d\n",res);
+}
