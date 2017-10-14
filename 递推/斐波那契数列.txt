@@ -1,0 +1,50 @@
+﻿递推题目：
+斐波那契数列
+
+
+斐波纳契数列是这样的数列：
+
+f1 = 1
+
+f2 = 1
+
+f3 = 2
+
+f4 = 3
+
+....
+
+fn = fn-1 + fn-2
+
+ 
+
+输入一个整数n
+
+求fn
+
+输入描述：
+一个整数n ，n<=40
+输出描述：
+一个整数fn
+
+样例：
+3
+输出：
+2
+code：
+#include<stdio.h>
+using namespace std;
+
+int f(int x)
+{
+    if(x==1 || x==2){return 1;}
+    else{return f(x-1)+f(x-2);}
+}
+
+int main()
+{
+    int n=0;
+    scanf("%d",&n);
+    printf("%d\n",f(n));
+    return 0;
+}
