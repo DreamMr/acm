@@ -1,0 +1,127 @@
+﻿坐标离散化：
+问题1：区域的个数
+w*h的格子上画了n条或垂直或水平的宽度为1的直线。求出这些线将格子划分成了多少个区域？
+
+限制条件：
+1<=w,h,<=1000000
+1<=n<=500
+
+样例：
+10 10 5
+1 6 4 4
+1 10 8 8
+4 4 1 10
+9 9 1 5
+10 10 6 10
+
+6
+
+思路：坐标离散化+bfs
+code：（声明：此代码未在oj上跑过）
+#include<stdio.h>
+#include<vector>
+#include<queue>
+#include<algorithm>
+using namespace std;
+
+struct node
+{
+    int x;
+    int y;
+    node(int x1,int y1){x=x1;y=y1;}
+};
+#define MAXN 500
+int x1[MAXN]={0};
+int x2[MAXN]={0};
+int y1[MAXN]={0};
+int y2[MAXN]={0};
+bool map[6*MAXN][6*MAXN]={0};
+int dir[4][2]={1,0,-1,0,0,1,0,-1};
+
+int compress(int s,int n,int *x1,int *x2)//坐标离散化
+{
+  vector<int> v;
+  for(int i=0;i<n;i++)
+  {
+   //****此处进行+1，-1是为了保证原来两条直线之间的空隙在缩小之后接着存在，可用反证法证明
+      for(int d=-1;d<=1;d++)//将端点左右或上下及其本身压入vector
+      {
+          if(x1[i]+d>0 && x1[i]+d<=s){v.push_back(x1[i]+d);}
+          if(x2[i]+d>0 && x2[i]+d<=s){v.push_back(x2[i]+d);}
+      }
+  }
+  sort(v.begin(),v.end());//排序
+  v.erase(unique(v.begin(),v.end()),v.end());//删除重复出现的端点
+  for(int i=0;i<n;i++)
+  {
+      x1[i]=find(v.begin(),v.end(),x1[i])-v.begin();
+      x2[i]=find(v.begin(),v.end(),x2[i])-v.begin();
+  }
+  return v.size();
+}
+
+int bfs(int w,int h,int n)
+{
+    int ans=0;
+   //*******将x，y坐标离散化
+    w=compress(w,n,x1,x2);
+    h=compress(h,n,y1,y2);
+   //*****构图
+    for(int i=0;i<n;i++)
+    {
+        for(int x=x1[i];x<=x2[i];x++)
+        {
+            for(int y=y1[i];y<=y2[i];y++)
+            {
+                map[x][y]=1;
+            }
+        }
+    }
+//********bfs
+    queue<node>q;
+    for(int x=0;x<w;x++)
+    {
+        for(int y=0;y<h;y++)
+        {
+            if(map[x][y]){continue;}
+            ans++;
+            node tmp(x,y);
+            q.push(tmp);
+            while(!q.empty())
+            {
+                tmp=q.front();
+                int sx=0,sy=0;
+                q.pop();
+                for(int i=0;i<4;i++)
+                {
+                  sx=tmp.x+dir[i][0];
+                  sy=tmp.y+dir[i][1];
+            //*********此处易错：因为新的端点的起始坐标变为[0,w || h)
+                  if(sx<0 || sx>=w){continue;}
+                  if(sy<0 || sy>=h){continue;}
+                  if(map[sx][sy]){continue;}
+                  map[sx][sy]=1;
+                  node tmp2(sx,sy);
+                  q.push(tmp2);
+                }
+            }
+        }
+    }
+    return ans;
+}
+int main()
+{
+    int w=0,h=0,n=0,ans=0;
+    scanf("%d %d %d",&w,&h,&n);
+    for(int i=0;i<n;i++)
+        scanf("%d %d %d %d",&x1[i],&x2[i],&y1[i],&y2[i]);
+    ans=bfs(w,h,n);
+    printf("%d\n",ans);
+    return 0;
+}
+
+
+坐标离散化几个注意点：
+1.离散化完后个人觉得整张图最大为map[n*3][n*3];但是挑战上为map[6*n][6*n],n为直线的数量。
+2.这种离散化的方法有一种弊端：当两个端点的距离小于2时无法将整张图缩小。
+3.个人觉得这种离散化的思想是将端点的数组根据数组下标来缩小
