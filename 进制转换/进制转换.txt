@@ -1,0 +1,89 @@
+﻿问题描述：n进制转10进制
+code
+#include<string>
+#include<iostream>
+#include<math.h>
+using namespace std;
+
+void solve(string n,int m)
+{
+    int size=n.length()-1;
+    int ans=0;
+   for(int i=0;i<n.length();i++)
+   {
+       int tmp=0;
+       if(n[i]>'9')
+       {
+           int t=n[i]-'A';
+           tmp=10+t;
+       }
+       else
+       {
+           tmp=n[i]-48;
+       }
+       ans+=tmp*pow(m,size*1.0);
+       size--;
+   }
+   cout<<ans<<endl;
+}
+
+int main()
+{
+    string n;
+    int m=0;
+    cin>>n;
+    cin>>m;
+    solve(n,m);
+    return 0;
+}
+
+问题描述：10进制转n进制
+code：
+#include<stdio.h>
+#include<string>
+#include<sstream>
+#include<iostream>
+using namespace std;
+
+string change(int x)
+{
+    stringstream ss;
+    ss<<x;
+    string t;
+    ss>>t;
+    return t;
+}
+void solve(int n,int m)
+{
+    string ans;
+    while(n)
+    {
+        int tmp=n%m;
+        n/=m;
+        if(tmp>9)
+        {
+            switch(tmp)
+            {
+                case 10:{ans="A"+ans;break;}
+                case 11:{ans="B"+ans;break;}
+                case 12:{ans="C"+ans;break;}
+                case 13:{ans="D"+ans;break;}
+                case 14:{ans="E"+ans;break;}
+                case 15:{ans="F"+ans;break;}
+            }
+        }
+        else
+        {
+            ans=change(tmp)+ans;
+        }
+    }
+    cout<<ans<<endl;
+}
+
+int main()
+{
+    int n=0,m=0;
+    scanf("%d %d",&n,&m);
+    solve(n,m);
+    return 0;
+}
