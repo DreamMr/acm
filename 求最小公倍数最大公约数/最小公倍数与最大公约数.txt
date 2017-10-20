@@ -1,0 +1,53 @@
+﻿问题描述：
+
+
+输入二个正整数x0,y0(2<=x0<100000,2<=y0<=1000000),求出满足下列条件的P,Q的个数
+
+条件:  1.P,Q是正整数
+
+2.要求P,Q以x0为最大公约数,以y0为最小公倍数.
+
+试求:满足条件的所有可能的两个正整数的个数.
+
+输入描述：二个正整数 x0,y0 3,60
+输出描述：4
+思路：利用p*q=x0*y0搜索
+code：
+#include<stdio.h>
+#include<math.h>
+
+using namespace std;
+
+int gcd(int a,int b)
+{
+    int tmp=0;
+    while(b)
+    {
+        tmp=a%b;
+        a=b;
+        b=tmp;
+    }
+    return a;
+}
+void solve(int a,int b)
+{
+    int ans=0;
+    int z=a*b;
+    for(int i=a;i<=sqrt(z);i+=a)
+    {
+        int j=z/i;
+        if(j<i){continue;}
+        int tmp=gcd(j,i);
+        if(tmp==a && j*i==b*tmp){ans++;}
+    }
+    ans*=2;
+    printf("%d\n",ans);
+}
+int main()
+{
+    int a=0,b=0;
+    scanf("%d %d",&a,&b);
+    solve(a,b);
+    return 0;
+}
+
