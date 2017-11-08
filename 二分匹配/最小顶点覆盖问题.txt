@@ -1,0 +1,72 @@
+问题描述：在N*N的网格中有K颗小行星。小行星i的位置是（Ri，Ci）。现在有一个强力武器能够用一发光束将一整行或一整列的小行星打成灰烬，想利用这个武器摧毁所有的小行星最少需要几发光束？
+
+1<=N<=500
+1<=K<=10000
+1<=R,C<=N
+
+XOX
+OXO
+OXO
+('X'为行星，‘O’为空）
+
+这是一个最小顶点的覆盖问题
+
+1-4   2-5
+|       |
+6       3
+
+所有的边都与1or5有关，所以需要两次
+每一条边都代表一个关系（此处的关系为：坐标）
+|最大匹配|=|最小顶点覆盖|
+1   4
+2   5
+3   6
+x   y(轴）
+code：
+#include<iostream>
+#include<vector>
+#include<string.h>
+using namespace std;
+vector<int>v[10001];
+bool used[10001];
+int match[10001];
+bool dfs(int w)
+{
+    used[w]=true;
+    for(int i=0;i<v[w].size();i++)
+    {
+        int u=match[v[w][i]];
+        if(u<0 || (!used[u] && dfs(u)))
+           {
+               match[w]=v[w][i];
+               match[v[w][i]]=w;
+               return true;
+           }
+    }
+    return false;
+}
+int solve(int k,int n)
+{
+    int ans=0;
+    memset(match,-1,sizeof(int)*10001);
+    for(int i=1;i<=n;i++)
+    {
+        memset(used,0,sizeof(bool)*10001);
+        if(dfs(i))
+            ans++;
+    }
+    return ans;
+}
+int main()
+{
+    int n=0,k=0;
+    cin>>n>>k;
+    int x,y;
+    for(int i=0;i<k;i++)
+    {
+        cin>>x>>y;
+        v[x].push_back(y+n);
+    }
+     cout<<solve(k,n)<<endl;
+    return 0;
+}

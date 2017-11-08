@@ -1,0 +1,35 @@
+问题描述：有N台计算机和K个任务。我们可以给每台计算机分配一个任务，每台计算机能够处理的任务和种类各不相同。请求出最多能够处理的任务的个数。
+典型的二分匹配问题
+算法思路：每次dfs只匹配一个点，在接下来的查找中如果出现冲突，会判断他在本回合中是否匹配过，若没匹配过，将会递归回去匹配
+code：
+bool used[10001];
+int match[10001];
+bool dfs(int w)
+{
+    used[w]=true;
+    for(int i=0;i<v[w].size();i++)
+    {
+        int u=match[v[w][i]];
+        if(u<0 || (!used[u] && dfs(u)))
+           {
+               match[w]=v[w][i];
+               match[v[w][i]]=w;
+               return true;
+           }
+    }
+    return false;
+}
+int solve(int k,int n)
+{
+    int ans=0;
+    memset(match,-1,sizeof(int)*10001);
+    for(int i=1;i<=n;i++)
+    {
+        memset(used,0,sizeof(bool)*10001);
+        if(dfs(i))
+            ans++;
+    }
+    return ans;
+}
+//***********注意***************
+一般最小顶点覆盖问题也可以转换为二分图的最大匹配
